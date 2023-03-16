@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useRef} from 'react'
 
 
 function NumButton(props) {
@@ -30,27 +30,19 @@ export default function Calculator(){
         setOpSet(false)
 
         reset = false
-        dotSet = false
-    }
-
-    function show(){
-        console.log(dotSet)
+        dotSet.current = false
     }
 
     function setNumber(number, val) {
         if (!number && val == '.') {
             number = '0.'
-            dotSet = true
-            show()
+            dotSet.current = true
         }
         else if (val == '.') {
-            console.log(dotSet)
-            if (dotSet)
+            if (dotSet.current)
                 return number
             number += val
-            dotSet = true
-            show()
-            console.log('what is happening')
+            dotSet.current = true
         }
         else if (!number && val > 0) 
             number = val.toString()
@@ -84,7 +76,7 @@ export default function Calculator(){
         if (!lastNum) {
             setOp(val)
             setOpSet(true)
-            dotSet = false
+            dotSet.current = false
             reset = false
         }
         else {
@@ -106,7 +98,7 @@ export default function Calculator(){
             }
             setOp(val)
             setLastNum(false)
-            dotSet = false
+            dotSet.current = false
         }
     }
 
@@ -115,6 +107,8 @@ export default function Calculator(){
             opButtonClick(op)
             setOpSet(false)
             reset = true
+            if (firstNum.toString().includes('.'))
+                dotSet.current = true
         }
     }
 
@@ -125,7 +119,7 @@ export default function Calculator(){
     const [opSet, setOpSet] = useState(false)
 
     let reset = false
-    let dotSet = false
+    const dotSet = useRef(false)
 
     let numButtons = []
     let numButtonsMap = [
